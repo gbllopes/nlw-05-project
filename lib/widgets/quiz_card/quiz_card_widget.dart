@@ -27,8 +27,10 @@ class QuizCardWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.of(context)
-            .pushNamed('/challege', arguments: {'questions': questions});
+        Navigator.of(context).pushNamed('/challege', arguments: {
+          'questions': questions,
+          'totalQuestionsAwnsered': totalQuestionsAwnsered
+        });
       },
       child: Container(
         padding: EdgeInsets.all(16),

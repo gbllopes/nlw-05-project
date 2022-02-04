@@ -15,15 +15,18 @@ class ChallengePage extends StatefulWidget {
 }
 
 class _ChallengePageState extends State<ChallengePage> {
-  final pageController = PageController();
   final controller = ChallengeController();
+  final pageController = PageController();
+
   bool isConfirmed = false;
   String actionButton = 'Confirmar';
 
   @override
   void initState() {
     controller.addListener(() {
-      setState(() {});
+      setState(() {
+        // controller.questionsAwnsered = ques
+      });
     });
     pageController.addListener(() {
       controller.setCurrentPage(pageController.page!.toInt() + 1);
@@ -49,7 +52,9 @@ class _ChallengePageState extends State<ChallengePage> {
   Widget build(BuildContext context) {
     Map arguments = ModalRoute.of(context)!.settings.arguments as Map;
     List<QuestionModel> questions = arguments['questions'];
+    int totalQuestionsAwnsered = arguments['totalQuestionsAwnsered'];
 
+    print(totalQuestionsAwnsered);
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(100),
@@ -116,7 +121,8 @@ class _ChallengePageState extends State<ChallengePage> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              if (!isConfirmed) ...[
+              if (!isConfirmed &&
+                  pageController.page!.toInt() + 1 < questions.length) ...[
                 Expanded(
                     child: NextButtonWidget(
                   label: 'Pular',

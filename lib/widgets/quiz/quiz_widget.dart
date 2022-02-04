@@ -49,7 +49,9 @@ class _QuizWidgetState extends State<QuizWidget> {
                   isConfirmed: widget.isConfirmed,
                   onTap: () {
                     setState(() {
-                      indexSelected = widget.question.awnsers.indexOf(e);
+                      if (!widget.isConfirmed) {
+                        indexSelected = widget.question.awnsers.indexOf(e);
+                      }
                     });
                   },
                 ),
