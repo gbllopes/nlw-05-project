@@ -3,11 +3,13 @@ import 'package:quiz_flutter_app/core/app_colors.dart';
 import 'package:quiz_flutter_app/core/app_gradients.dart';
 import 'package:quiz_flutter_app/core/app_images.dart';
 import 'package:quiz_flutter_app/core/app_text_styles.dart';
+import 'package:quiz_flutter_app/models/quiz_model.dart';
 import 'package:quiz_flutter_app/models/user_model.dart';
 import 'package:quiz_flutter_app/widgets/score_card/score_card_widget.dart';
 
 class AppBarWidget extends PreferredSize {
   final UserModel user;
+
   AppBarWidget({required this.user})
       : super(
             preferredSize: Size.fromHeight(250),
@@ -43,7 +45,10 @@ class AppBarWidget extends PreferredSize {
                     ),
                   ),
                   Align(
-                      alignment: Alignment(0.0, 1.6), child: ScoreCardWidget())
+                      alignment: Alignment(0.0, 1.6),
+                      child: ScoreCardWidget(
+                        percent: user.score / 100,
+                      ))
                 ],
               ),
             ));

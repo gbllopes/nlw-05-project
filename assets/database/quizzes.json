@@ -3,7 +3,7 @@
         "title": "Gerenciamento de Estado",
         "imagem": "data",
         "level": "facil",
-        "questionsAwnsered": 2,
+        "questionsAwnsered": 1,
           "questions": [
             {
               "title": "Está curtindo o Flutter?",

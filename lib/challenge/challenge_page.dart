@@ -15,7 +15,6 @@ class ChallengePage extends StatefulWidget {
 }
 
 class _ChallengePageState extends State<ChallengePage> {
-  final controller = ChallengeController();
   final pageController = PageController();
 
   bool isConfirmed = false;
@@ -23,38 +22,57 @@ class _ChallengePageState extends State<ChallengePage> {
 
   @override
   void initState() {
-    controller.addListener(() {
-      setState(() {
-        // controller.questionsAwnsered = ques
-      });
-    });
+    ChallengeController.controller.addListener(() {});
     pageController.addListener(() {
-      controller.setCurrentPage(pageController.page!.toInt() + 1);
+      ChallengeController.controller
+          .setCurrentPage(pageController.page!.toInt() + 1);
     });
     super.initState();
   }
 
-  void changeActionButton(List<QuestionModel> questions) {
+  void changeActionButton(
+      List<QuestionModel> questions, String quizTitle, int indexSelected) {
+    if (!mounted) {
+      return;
+    }
     setState(() {
-      isConfirmed = actionButton == 'Confirmar' ? true : false;
-      actionButton = actionButton == 'Confirmar' ? 'Avançar' : 'Confirmar';
+      if (indexSelected > -1) {
+        isConfirmed = actionButton == 'Confirmar' ? true : false;
+        actionButton = actionButton == 'Confirmar' ? 'Avançar' : 'Confirmar';
+      }
     });
 
     if (!isConfirmed) {
-      if (pageController.page!.toInt() + 1 < questions.length) {
-        pageController.nextPage(
-            duration: Duration(milliseconds: 100), curve: Curves.linear);
-      } else {}
+      if (indexSelected > -1) {
+        if (pageController.page!.toInt() + 1 < questions.length) {
+          pageController.nextPage(
+              duration: Duration(milliseconds: 100), curve: Curves.linear);
+        } else {
+          Navigator.of(context).pushReplacementNamed('/result', arguments: {
+            'quizTitle': quizTitle,
+            'totalQuizQuestions': questions.length,
+            'totalSuccesses': ChallengeController.controller.totalRights
+          });
+        }
+        ChallengeController.controller.setIndexSelected(-1);
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    ChallengeController.controller.addListener(() {});
+
     Map arguments = ModalRoute.of(context)!.settings.arguments as Map;
     List<QuestionModel> questions = arguments['questions'];
+    String quizTitle = arguments['quizTitle'];
     int totalQuestionsAwnsered = arguments['totalQuestionsAwnsered'];
 
-    print(totalQuestionsAwnsered);
+    ChallengeController.controller.setCurrentPage(totalQuestionsAwnsered > 0
+        ? totalQuestionsAwnsered
+        : totalQuestionsAwnsered + 1);
+
+    print(ChallengeController.controller.getCurrentPage);
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(100),
@@ -72,6 +90,7 @@ class _ChallengePageState extends State<ChallengePage> {
                     children: [
                       GestureDetector(
                         onTap: () {
+                          ChallengeController.controller.setIndexSelected(-1);
                           Navigator.of(context).pushReplacementNamed('/home');
                         },
                         child: Icon(Icons.arrow_back),
@@ -84,7 +103,7 @@ class _ChallengePageState extends State<ChallengePage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Questão ${controller.currentPage}',
+                      'Questão ${ChallengeController.controller.getCurrentPage}',
                       style: GoogleFonts.notoSans(color: AppColors.grey),
                     ),
                     Text(
@@ -98,7 +117,8 @@ class _ChallengePageState extends State<ChallengePage> {
                 ),
                 QuestionIndicatorWidget(
                     percentagemConcluida:
-                        controller.currentPage / questions.length),
+                        ChallengeController.controller.getCurrentPage /
+                            questions.length),
               ],
             ),
           )),
@@ -122,7 +142,8 @@ class _ChallengePageState extends State<ChallengePage> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               if (!isConfirmed &&
-                  pageController.page!.toInt() + 1 < questions.length) ...[
+                  ChallengeController.controller.currentPage <
+                      questions.length) ...[
                 Expanded(
                     child: NextButtonWidget(
                   label: 'Pular',
@@ -135,7 +156,10 @@ class _ChallengePageState extends State<ChallengePage> {
               Expanded(
                   child: NextButtonWidget(
                 label: actionButton,
-                acao: () => {changeActionButton(questions)},
+                acao: () => {
+                  changeActionButton(questions, quizTitle,
+                      ChallengeController.controller.getIndexSeletected)
+                },
               )),
             ],
           ),

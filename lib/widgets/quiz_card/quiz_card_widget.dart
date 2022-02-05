@@ -29,7 +29,8 @@ class QuizCardWidget extends StatelessWidget {
       onTap: () {
         Navigator.of(context).pushNamed('/challege', arguments: {
           'questions': questions,
-          'totalQuestionsAwnsered': totalQuestionsAwnsered
+          'totalQuestionsAwnsered': totalQuestionsAwnsered,
+          'quizTitle': title
         });
       },
       child: Container(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:quiz_flutter_app/challenge/challenge_controller.dart';
 
 import 'package:quiz_flutter_app/core/core.dart';
 import 'package:quiz_flutter_app/models/question_model.dart';
@@ -6,7 +7,7 @@ import 'package:quiz_flutter_app/widgets/awnser/awnser_widget.dart';
 
 class QuizWidget extends StatefulWidget {
   final QuestionModel question;
-  late bool isConfirmed;
+  final bool isConfirmed;
   QuizWidget({
     Key? key,
     required this.question,
@@ -18,7 +19,16 @@ class QuizWidget extends StatefulWidget {
 }
 
 class _QuizWidgetState extends State<QuizWidget> {
-  int? indexSelected = -1;
+  @override
+  void initState() {
+    ChallengeController.controller.addListener(() {
+      if (!mounted) {
+        return;
+      }
+      setState(() {});
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,16 +53,17 @@ class _QuizWidgetState extends State<QuizWidget> {
                   awnser: e.title,
                   isRight: e.isRight,
                   indexAwnser: widget.question.awnsers.indexOf(e),
-                  indexSelectedAwnser: indexSelected,
+                  indexSelectedAwnser:
+                      ChallengeController.controller.getIndexSeletected,
                   isSelected:
-                      indexSelected == widget.question.awnsers.indexOf(e),
+                      ChallengeController.controller.getIndexSeletected ==
+                          widget.question.awnsers.indexOf(e),
                   isConfirmed: widget.isConfirmed,
                   onTap: () {
-                    setState(() {
-                      if (!widget.isConfirmed) {
-                        indexSelected = widget.question.awnsers.indexOf(e);
-                      }
-                    });
+                    if (!widget.isConfirmed) {
+                      ChallengeController.controller
+                          .setIndexSelected(widget.question.awnsers.indexOf(e));
+                    }
                   },
                 ),
               )

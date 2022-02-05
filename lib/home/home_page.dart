@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:quiz_flutter_app/challenge/challenge_controller.dart';
 import 'package:quiz_flutter_app/core/app_colors.dart';
 import 'package:quiz_flutter_app/home/home_controller.dart';
 import 'package:quiz_flutter_app/home/home_state.dart';
